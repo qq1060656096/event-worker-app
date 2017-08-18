@@ -1,0 +1,16 @@
+# 事件列表
+event_lists:
+  demo_event: 1 # demo事件
+#  ------ 分割线 -------
+# 模块列表
+module_lists:
+  demo_module: # docker 模块
+    id: 1 # 必须唯一
+    class: \Wei\EventWorkSimple\Customer\DemoCustomer # 调用类
+    callback: run # 调用方法
+    listen_event_lists: # 监听事件列表
+      - demo_event
+# 计划任务列表
+cron_lists:
+  demo_cron: # cron 计划任务名字唯一
+    class: \Wei\EventWorkSimple\Cron\DemoCron # 调用类
