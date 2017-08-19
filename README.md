@@ -20,7 +20,7 @@ git clone https://github.com/qq1060656096/event-worker-simple.git
 ```sh
 DROP TABLE IF EXISTS `event_log`;
 CREATE TABLE `event_log` (
-  `id` tinyint(4) NOT NULL AUTO_INCREMENT COMMENT '事件日志ID',
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '事件日志ID',
   `event` tinyint(4) NOT NULL COMMENT '事件ID',
   `user` varchar(32) NOT NULL DEFAULT '0' COMMENT '用户',
   `data` longtext NOT NULL COMMENT 'json数据',
@@ -98,7 +98,7 @@ module_lists:
       - demo_event
 ```
 
-### 3. 运行脚本
+### 3. 运行事件消费者脚本
 > php lib/EventWorkerRun.php 模块名 vendor/autoload.php
 
 ```sh
@@ -156,9 +156,13 @@ cron_lists:
 ```sh
 php lib/CronRun.php demo_cron vendor/autoload.php
 ```
-
+### 运行发送事件测试
+```sh
+# 一直运行间隔1秒
+php lib/DemoSendEvent.php demo_event 0 1
+```
 # 单元测试使用
 
 > --bootstrap 在测试前先运行一个 "bootstrap" PHP 文件
 - --bootstrap引导测试: phpunit --bootstrap vendor/autoload.php tests/
-- --bootstrap引导测试: phpunit --bootstrap tests/TestInit.php tests/
+- --bootstrap引导测试: phpunit --bootstrap tests/TestInit.php tests/ 

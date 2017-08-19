@@ -9,7 +9,10 @@ switch (true) {
         break;
     // 请传入引入composer autoload.php
     case empty($argv[2]):
-        throw new \Exception('引导文件不能为空(composer "vendor/autoload.php")'.$demo);
+        $composerAutoload = 'vendor/autoload.php';
+        if (!file_exists($composerAutoload)) {
+            throw new Exception('引导文件不能为空(composer "vendor/autoload.php")'.$demo);
+        }
         break;
     default:
         list($moduleKey, $composerAutoload) = [$argv[1], $argv[2]];
