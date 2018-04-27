@@ -7,9 +7,11 @@ switch (true) {
         break;
     // 请传入引入composer autoload.php
     case empty($argv[2]):
-        $composerAutoload = $argv[2];
-        $errorMsg = sprintf("the boot file is found.(boot-file: %s)", $composerAutoload);
-        throw new Exception($errorMsg);
+        $composerAutoload = 'vendor/autoload.php';
+        if (!file_exists($composerAutoload)) {
+            $errorMsg = sprintf("the boot file is found.(boot-file: %s)", $composerAutoload);
+            throw new Exception($errorMsg);
+        }
         break;
     default:
         list($moduleName, $composerAutoload) = [$argv[1], $argv[2]];
