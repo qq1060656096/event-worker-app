@@ -12,6 +12,7 @@ switch (true) {
             $errorMsg = sprintf("the boot file is found.(boot-file: %s)", $composerAutoload);
             throw new Exception($errorMsg);
         }
+        list($moduleName, $composerAutoload) = [$argv[1], $composerAutoload];
         break;
     default:
         list($moduleName, $composerAutoload) = [$argv[1], $argv[2]];
