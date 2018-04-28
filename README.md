@@ -55,12 +55,12 @@ CREATE TABLE `event_module` (
 
 ```php
 <?php
-namespace Wei\EventWorkSimple\Customer;
+namespace Zwei\EventWorkSimple\Customer;
 
 /**
  * 测试消费者
  * Class DemoCustomer
- * @package Wei\EventWorkSimple\Customer
+ * @package Zwei\EventWorkSimple\Customer
  */
 class DemoCustomer
 {
@@ -85,43 +85,55 @@ class DemoCustomer
 
 ```yml
 # 事件列表
-event_lists:
-  demo_event: 1 # demo事件
+events:
+  BUY_PRODUCT: 1 # demo事件
 #  ------ 分割线 -------
 # 模块列表
-module_lists:
+modules:
   demo_module: # docker 模块
-    id: 1 # 必须唯一
-    class: \Wei\EventWorkSimple\Customer\DemoCustomer # 调用类
-    callback: run # 调用方法
-    listen_event_lists: # 监听事件列表
-      - demo_event
+    class: \Zwei\EventWorkSimple\Customer\DemoCustomer # 调用类
+    callback_func: run # 调用方法
+    listen_events: # 监听事件列表
+      - BUY_PRODUCT
 ```
 
 ### 3. 运行事件消费者脚本
-> php lib/EventWorkerRun.php 模块名 vendor/autoload.php
+> php src/EventWorkerRun.php 模块名
+
+> php src/EventWorkerRun.php 模块名 vendor/autoload.php
 
 ```sh
-php lib/EventWorkerRun.php demo_module vendor/autoload.php
+php src/EventWorkerRun.php demo_module
+php src/EventWorkerRun.php demo_module vendor/autoload.php
+```
+
+> 4. 运行发送测试事件
+
+php src/TestSendEvent.php 事件名 运行次数(0一直运行) 间隔多少秒 vendor/autoload.php
+php src/TestSendEvent.php 事件名 运行次数(0一直运行) 间隔多少秒
+
+```sh
+php src/TestSendEvent.php BUY_PRODUCT 0 1 # 一直运行不间隔
+php src/TestSendEvent.php BUY_PRODUCT 0 1 vendor/autoload.php # 一直运行不间隔
 ```
 
 ## 如何运行计划任务
 
 ### 1. 创建计划任务类
 
-> 在lib/Customer创建计划任务类"lib/Cron/DemoCron.php"并创建"run()"方法,文件内容如下:
+> 在src/Customer创建计划任务类"src/Cron/DemoCron.php"并创建"run()"方法,文件内容如下:
 
 ```php
 <?php
-namespace Wei\EventWorkSimple\Cron;
+namespace Zwei\EventWorkSimple\Cron;
 
-use Wei\EventWork\CronInterface;
+use Zwei\EventWork\CronInterface;
 
 /**
  * 测试计划任务
  *
  * Class DemoCron
- * @package Wei\EventWorkSimple\Cron
+ * @package Zwei\EventWorkSimple\Cron
  */
 class DemoCron implements CronInterface
 {
@@ -149,17 +161,17 @@ class DemoCron implements CronInterface
 # 计划任务列表
 cron_lists:
   demo_cron: # cron 计划任务名字唯一
-    class: \Wei\EventWorkSimple\Cron\DemoCron # 调用类
+    class: \Zwei\EventWorkSimple\Cron\DemoCron # 调用类
 ```
 
 ### 3. 运行脚本
 ```sh
-php lib/CronRun.php demo_cron vendor/autoload.php
+php src/CronRun.php demo_cron vendor/autoload.php
 ```
 ### 运行发送事件测试
 ```sh
 # 一直运行间隔1秒
-php lib/DemoSendEvent.php demo_event 0 1
+php src/DemoSendEvent.php demo_event 0 1
 ```
 # 单元测试使用
 

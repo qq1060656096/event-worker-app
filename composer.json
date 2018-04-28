@@ -13,28 +13,21 @@
   ],
   "autoload": {
     "psr-4":{
-      "Wei\\EventWorkSimple\\":"lib/"
+      "Zwei\\EventWorkSimple\\":"src/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "Wei\\EventWorkSimple\\Tests\\": "tests"
+      "Zwei\\EventWorkSimple\\Tests\\": "tests"
     }
   },
   "repositories": [
     {
       "type": "vcs",
       "url": "https://github.com/qq1060656096/event-worker.git"
-    },
-    {
-      "type": "vcs",
-      "url": "https://github.com/qq1060656096/brief-db.git"
     }
   ],
   "require": {
-    "wei/event-worker": "~1"
-  },
-  "require-dev": {
-    "phpunit/phpunit": "5.4.*"
+    "zwei/event-worker": "dev-master"
   }
 }
