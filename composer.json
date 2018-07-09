@@ -1,13 +1,12 @@
 {
-  "name": "wei/event-worker-app",
-  "description": "brief-db library for PHP",
+  "name": "zwei/event-worker-app",
+  "description": "The event-worker Project Application",
   "keywords": ["cqrs", "event worker", "cli", "simple queue"],
-  "license": "BSD-3",
+  "license": "BSD-3-Clause",
   "authors": [
     {
       "name": "Zhao Wei Jie",
-      "email": "1060656096@qq.com",
-      "role": "Founder and project lead"
+      "email": "1060656096@qq.com"
     }
   ],
   "autoload": {
