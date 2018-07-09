@@ -1,7 +1,7 @@
 {
   "name": "zwei/event-worker-app",
   "description": "The event-worker Project Application",
-  "keywords": ["cqrs", "event worker", "cli", "simple queue"],
+  "keywords": ["event worker", "event worker app", "cli", "simple queue"],
   "license": "BSD-3-Clause",
   "authors": [
     {
@@ -19,13 +19,8 @@
       "Zwei\\EventWorkerApp\\Tests\\": "tests"
     }
   },
-  "repositories": [
-    {
-      "type": "vcs",
-      "url": "https://github.com/qq1060656096/event-worker.git"
-    }
-  ],
   "require": {
-    "zwei/event-worker": "dev-master"
-  }
+    "zwei/event-worker": "2.0.0"
+  },
+  "minimum-stability": "dev"
 }

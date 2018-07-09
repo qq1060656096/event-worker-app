@@ -1,3 +1,8 @@
+# 计划任务列表
+crons:
+  demo_cron: # cron 计划任务名字唯一
+    class: "\\Zwei\\EventWork\\Tests\\Demo\\DemoCron" # 调用类
+    callback_func: "run" # 调用方法
 # 事件列表
 events:
   BUY_PRODUCT: 1 # demo事件
@@ -5,7 +10,7 @@ events:
 # 模块列表
 modules:
   demo_module: # docker 模块
-    class: \Zwei\EventWorkerApp\Customer\DemoCustomer # 调用类
+    class: "\\Zwei\\EventWorkerApp\\Customer\\DemoCustomer" # 调用类
     callback_func: run # 调用方法
     listen_events: # 监听事件列表
       - BUY_PRODUCT
