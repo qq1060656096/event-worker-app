@@ -2,20 +2,23 @@
 event worker simple 是Event Worker的示例
 
 ## 1 安装(Install)
-> 1. 克隆项目
+> 1. 安装composer
+> 2. 安装项目
 ```sh
-git clone https://github.com/qq1060656096/event-worker-simple.git
+# 安装指定的版本
+composer create-project zwei/event-worker-app "2.0.0"
+
+# 从master分支安装
+composer create-project zwei/event-worker-app dev-master
 ```
-> 2. 安装composer
-> 3. 执行composer install
-> 4. 配置
+> 3. 配置
 
 ```sh
 数据库配置文件: db.php
 事件配置文件: event.conf.yml
 ```
 
-> 5. 创建表
+> 4. 创建表
 
 ```sh
 DROP TABLE IF EXISTS `event_log`;
