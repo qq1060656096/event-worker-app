@@ -5,7 +5,7 @@ events:
 # 模块列表
 modules:
   demo_module: # docker 模块
-    class: \Zwei\EventWorkSimple\Customer\DemoCustomer # 调用类
+    class: \Zwei\EventWorkerApp\Customer\DemoCustomer # 调用类
     callback_func: run # 调用方法
     listen_events: # 监听事件列表
       - BUY_PRODUCT

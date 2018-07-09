@@ -1,6 +1,5 @@
 {
-  "name": "wei/event-worker-simple",
-  "type": "library",
+  "name": "wei/event-worker-app",
   "description": "brief-db library for PHP",
   "keywords": ["cqrs", "event worker", "cli", "simple queue"],
   "license": "BSD-3",
@@ -13,12 +12,12 @@
   ],
   "autoload": {
     "psr-4":{
-      "Zwei\\EventWorkSimple\\":"src/"
+      "Zwei\\EventWorkerApp\\":"src/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "Zwei\\EventWorkSimple\\Tests\\": "tests"
+      "Zwei\\EventWorkerApp\\Tests\\": "tests"
     }
   },
   "repositories": [

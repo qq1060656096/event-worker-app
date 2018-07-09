@@ -20,15 +20,16 @@ git clone https://github.com/qq1060656096/event-worker-simple.git
 ```sh
 DROP TABLE IF EXISTS `event_log`;
 CREATE TABLE `event_log` (
-  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '事件日志ID',
-  `event` tinyint(4) NOT NULL COMMENT '事件ID',
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '事件日志ID',
+  `event` int(11) NOT NULL COMMENT '事件ID',
   `user` varchar(32) NOT NULL DEFAULT '0' COMMENT '用户',
   `data` longtext NOT NULL COMMENT 'json数据',
   `ip` varchar(32) NOT NULL COMMENT 'ip地址',
-  `created` int(11) NOT NULL COMMENT '事件事件',
+  `created` int(11) NOT NULL COMMENT '事件创建时间',
   PRIMARY KEY (`id`),
   UNIQUE KEY `module_type` (`id`,`event`)
-) ENGINE=MyISAM AUTO_INCREMENT=59 DEFAULT CHARSET=utf8mb4 COMMENT='事件日志';
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='事件日志';
+
 
 -- ----------------------------
 -- Records of event_log
@@ -37,30 +38,32 @@ CREATE TABLE `event_log` (
 -- ----------------------------
 -- Table structure for event_module
 -- ----------------------------
-DROP TABLE IF EXISTS `event_module`;
-CREATE TABLE `event_module` (
-  `module` tinyint(4) DEFAULT NULL COMMENT '模块',
-  `event` tinyint(4) DEFAULT NULL COMMENT '事件ID',
-  `last_id` int(11) NOT NULL DEFAULT '0' COMMENT '最后执行的event_log.id',
-  `event_ids` longtext COMMENT '未执行的ids"逗号分隔",示例(1,2,3,4,5)',
-  UNIQUE KEY `module_type` (`module`,`event`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COMMENT='事件模块执行记录';
+DROP TABLE IF EXISTS `event_module_log`;
+CREATE TABLE `event_module_log` (
+  `mid` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `module_name` varchar(64) DEFAULT NULL COMMENT '模块',
+  `event_id` tinyint(4) DEFAULT NULL COMMENT '事件ID',
+  `event_log_last_id` int(11) NOT NULL DEFAULT '0' COMMENT '最后执行的event_log.id',
+  `event_log_ids` longtext COMMENT 'event_log表:未执行的ids"逗号分隔",示例(1,2,3,4,5)',
+  PRIMARY KEY (`mid`),
+  UNIQUE KEY `unique` (`module_name`,`event_id`)
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='事件模块执行记录';;
 ```
 
 ## 如何监听事件
 
 ### 1. 创建监听事件类
 
-> 在lib/Customer创建监听事件类"lib/Customer/DemoCustomer.php"并创建"run()"方法,文件内容如下:
+> 在src/Customer创建监听事件类"src/Customer/DemoCustomer.php"并创建"run()"方法,文件内容如下:
 
 ```php
 <?php
-namespace Zwei\EventWorkSimple\Customer;
+namespace Zwei\EventWorkerApp\Customer;
 
 /**
  * 测试消费者
  * Class DemoCustomer
- * @package Zwei\EventWorkSimple\Customer
+ * @package Zwei\EventWorkerApp\Customer
  */
 class DemoCustomer
 {
@@ -91,7 +94,7 @@ events:
 # 模块列表
 modules:
   demo_module: # docker 模块
-    class: \Zwei\EventWorkSimple\Customer\DemoCustomer # 调用类
+    class: \Zwei\EventWorkerApp\Customer\DemoCustomer # 调用类
     callback_func: run # 调用方法
     listen_events: # 监听事件列表
       - BUY_PRODUCT
@@ -125,7 +128,7 @@ php src/TestSendEvent.php BUY_PRODUCT 0 1 vendor/autoload.php # 一直运行不�
 
 ```php
 <?php
-namespace Zwei\EventWorkSimple\Cron;
+namespace Zwei\EventWorkerApp\Cron;
 
 use Zwei\EventWork\CronInterface;
 
@@ -133,7 +136,7 @@ use Zwei\EventWork\CronInterface;
  * 测试计划任务
  *
  * Class DemoCron
- * @package Zwei\EventWorkSimple\Cron
+ * @package Zwei\EventWorkerApp\Cron
  */
 class DemoCron implements CronInterface
 {
@@ -161,7 +164,7 @@ class DemoCron implements CronInterface
 # 计划任务列表
 cron_lists:
   demo_cron: # cron 计划任务名字唯一
-    class: \Zwei\EventWorkSimple\Cron\DemoCron # 调用类
+    class: \Zwei\EventWorkerApp\Cron\DemoCron # 调用类
 ```
 
 ### 3. 运行脚本
