@@ -1,10 +1,10 @@
 <?php
-namespace Zwei\EventWorkSimple\Customer;
+namespace Zwei\EventWorkerApp\Customer;
 
 /**
  * 测试消费者
  * Class DemoCustomer
- * @package Zwei\EventWorkSimple\Customer
+ * @package Zwei\EventWorkerApp\Customer
  */
 class DemoCustomer
 {

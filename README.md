@@ -1,178 +1,43 @@
-# event-worker-simple
-event worker simple 是Event Worker的示例
+# event-worker-app
+> Event Worker App 是Event Worker的示例
 
-## 1 安装(Install)
-> 1. 克隆项目
-```sh
-git clone https://github.com/qq1060656096/event-worker-simple.git
-```
-> 2. 安装composer
-> 3. 执行composer install
-> 4. 配置
+> 业务频繁的变动，频繁增减活动，导致开发修改现有的业务逻辑，造成程序很混乱，质量无法保证。
+也导致测试进行了大量重复而不必要测测试,从而浪费大量的人力成本,而不能有预期到结果。
 
-```sh
-数据库配置文件: db.php
-事件配置文件: event.conf.yml
-```
+### 注意
+> Event Worker 当前版本只针对中小型企业，因为部署简单，你可以快速的安装使用。
+> 之后会有 Event Worker RabbitMQ 就是针对大型企业，高并发业务场景。
 
-> 5. 创建表
+## 使用场景 
+> 1. 主要务不变，一些像活动、注册、登录、购买送积分、发短信等
+> 2. saas平台使用为每个客户部署环境，很多公司用docker 快速部署环境，环境创建后会导入sql，但是可能创建成功事件不确定，我们可以发送一个import_event
+事件来解决这个问题
 
-```sh
-DROP TABLE IF EXISTS `event_log`;
-CREATE TABLE `event_log` (
-  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '事件日志ID',
-  `event` tinyint(4) NOT NULL COMMENT '事件ID',
-  `user` varchar(32) NOT NULL DEFAULT '0' COMMENT '用户',
-  `data` longtext NOT NULL COMMENT 'json数据',
-  `ip` varchar(32) NOT NULL COMMENT 'ip地址',
-  `created` int(11) NOT NULL COMMENT '事件事件',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `module_type` (`id`,`event`)
-) ENGINE=MyISAM AUTO_INCREMENT=59 DEFAULT CHARSET=utf8mb4 COMMENT='事件日志';
+### 案例:
 
--- ----------------------------
--- Records of event_log
--- ----------------------------
+##### 1. 用户注册
+> 这个月是送积分，可能下个月送红包
 
--- ----------------------------
--- Table structure for event_module
--- ----------------------------
-DROP TABLE IF EXISTS `event_module`;
-CREATE TABLE `event_module` (
-  `module` tinyint(4) DEFAULT NULL COMMENT '模块',
-  `event` tinyint(4) DEFAULT NULL COMMENT '事件ID',
-  `last_id` int(11) NOT NULL DEFAULT '0' COMMENT '最后执行的event_log.id',
-  `event_ids` longtext COMMENT '未执行的ids"逗号分隔",示例(1,2,3,4,5)',
-  UNIQUE KEY `module_type` (`module`,`event`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COMMENT='事件模块执行记录';
-```
+##### 2. 比如活动，每次节假日的活动规则不一样
+> 1. 3.8妇女节,女性用户登录（可以获得专属优惠券，购买商品后可以获得额外返现或者双倍积分等规则）
+> 2. 5.1劳动节邀请好友(获得实物大礼包,好友购买商品,送2元红包,1.5倍积分，邀请人获得3元红包，10个积分)，购买商品送劳动币。
+> 3. 国庆节活动登录、注册、购买商品送爱国币。
 
-## 如何监听事件
+### 问题：
+> 1. 登录送积分、送红包
+> 2. “5.1”劳动节购买商品送劳动币等
+> 3. 国庆登录、注册、购买送爱国比
 
-### 1. 创建监听事件类
+> 在上面这个场景,其实登录、购买、邀请好友这些逻辑是没有变化，每次活动或者需求程序员根据需求不停的修改业务逻辑，每次更改业务，测试都要去做一些重复的测试，那么有没有办法简单化呢。
 
-> 在lib/Customer创建监听事件类"lib/Customer/DemoCustomer.php"并创建"run()"方法,文件内容如下:
+### 解决：
+> 我们使用事件（Event），在注册、登录、购买、邀请好友我们都发送相应的事件（注册register_event、登录login_event、购买product_buy_event、邀请好友inviting_friend_event），我们可以监听在不同的消费者监听同一事件，例如我们登录要送积分，国庆登录又要送爱国比，那么登录登录(login_event)事件同时要送积分和爱国比，我们可以分别写2个消费者去监听登录事件，一个登录送积分消费者，一个国庆消费者送爱国比，当国庆结束我们可以停止国庆消费者。而不必关登录送积分消费者
 
-```php
-<?php
-namespace Zwei\EventWorkSimple\Customer;
+## 开发文档
+[开发文档](docs/md/README.md)
 
-/**
- * 测试消费者
- * Class DemoCustomer
- * @package Zwei\EventWorkSimple\Customer
- */
-class DemoCustomer
-{
-    /**
-     * 监听事件方法
-     *
-     * @param string $evenKey 事件
-     * @param mixed $data 事件数据
-     * @param array $eventRaw 事件原始数据
-     * @return bool true 成功,否者失败
-     */
-    public function run($evenKey, $data, $eventRaw)
-    {
-        print_r($eventRaw);
-        return true;
-    }
-}
-```
+![流程图](docs/images/flow-diagram.png)
 
-
-### 2. 增加监听配置"event.conf.yml"
-
-```yml
-# 事件列表
-events:
-  BUY_PRODUCT: 1 # demo事件
-#  ------ 分割线 -------
-# 模块列表
-modules:
-  demo_module: # docker 模块
-    class: \Zwei\EventWorkSimple\Customer\DemoCustomer # 调用类
-    callback_func: run # 调用方法
-    listen_events: # 监听事件列表
-      - BUY_PRODUCT
-```
-
-### 3. 运行事件消费者脚本
-> php src/EventWorkerRun.php 模块名
-
-> php src/EventWorkerRun.php 模块名 vendor/autoload.php
-
-```sh
-php src/EventWorkerRun.php demo_module
-php src/EventWorkerRun.php demo_module vendor/autoload.php
-```
-
-> 4. 运行发送测试事件
-
-php src/TestSendEvent.php 事件名 运行次数(0一直运行) 间隔多少秒 vendor/autoload.php
-php src/TestSendEvent.php 事件名 运行次数(0一直运行) 间隔多少秒
-
-```sh
-php src/TestSendEvent.php BUY_PRODUCT 0 1 # 一直运行不间隔
-php src/TestSendEvent.php BUY_PRODUCT 0 1 vendor/autoload.php # 一直运行不间隔
-```
-
-## 如何运行计划任务
-
-### 1. 创建计划任务类
-
-> 在src/Customer创建计划任务类"src/Cron/DemoCron.php"并创建"run()"方法,文件内容如下:
-
-```php
-<?php
-namespace Zwei\EventWorkSimple\Cron;
-
-use Zwei\EventWork\CronInterface;
-
-/**
- * 测试计划任务
- *
- * Class DemoCron
- * @package Zwei\EventWorkSimple\Cron
- */
-class DemoCron implements CronInterface
-{
-
-    /**
-     * 运行计划任务
-     * @param string $cronName 计划任务名字
-     */
-    public function run($cronName)
-    {
-        echo "\nstart cron date:" . date('Y-m-d H:i:s');
-        echo "\nstart cron : $cronName\n";
-        for ($i = 1; $i < 11; $i++) {
-            echo "$i\n";
-            usleep(500000);
-        }
-        echo "\nend cron : $cronName\n";
-    }
-}
-```
-
-### 2. 增加监听配置"event.conf.yml"
-
-```yml
-# 计划任务列表
-cron_lists:
-  demo_cron: # cron 计划任务名字唯一
-    class: \Zwei\EventWorkSimple\Cron\DemoCron # 调用类
-```
-
-### 3. 运行脚本
-```sh
-php src/CronRun.php demo_cron vendor/autoload.php
-```
-### 运行发送事件测试
-```sh
-# 一直运行间隔1秒
-php src/DemoSendEvent.php demo_event 0 1
-```
 # 单元测试使用
 
 > --bootstrap 在测试前先运行一个 "bootstrap" PHP 文件
