@@ -1,33 +1,26 @@
 {
-  "name": "wei/event-worker-simple",
-  "type": "library",
-  "description": "brief-db library for PHP",
-  "keywords": ["cqrs", "event worker", "cli", "simple queue"],
-  "license": "BSD-3",
+  "name": "zwei/event-worker-app",
+  "description": "The event-worker Project Application",
+  "keywords": ["event worker", "event worker app", "cli", "simple queue"],
+  "license": "BSD-3-Clause",
   "authors": [
     {
       "name": "Zhao Wei Jie",
-      "email": "1060656096@qq.com",
-      "role": "Founder and project lead"
+      "email": "1060656096@qq.com"
     }
   ],
   "autoload": {
     "psr-4":{
-      "Zwei\\EventWorkSimple\\":"src/"
+      "Zwei\\EventWorkerApp\\":"src/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "Zwei\\EventWorkSimple\\Tests\\": "tests"
+      "Zwei\\EventWorkerApp\\Tests\\": "tests"
     }
   },
-  "repositories": [
-    {
-      "type": "vcs",
-      "url": "https://github.com/qq1060656096/event-worker.git"
-    }
-  ],
   "require": {
-    "zwei/event-worker": "dev-master"
-  }
+    "zwei/event-worker": "2.0.0"
+  },
+  "minimum-stability": "dev"
 }
