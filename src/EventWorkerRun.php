@@ -8,7 +8,10 @@ switch (true) {
     // 请传入引入composer autoload.php
     case empty($argv[2]):
         $composerAutoload = 'vendor/autoload.php';
-        if (!file_exists($composerAutoload)) {
+        $composerAutoload0 = dirname(__DIR__).$composerAutoload;
+        if(file_exists($composerAutoload0)){
+            $composerAutoload = $composerAutoload0;
+        }else if (!file_exists($composerAutoload)) {
             $errorMsg = sprintf("the boot file is found.(boot-file: %s)", $composerAutoload);
             throw new Exception($errorMsg);
         }
